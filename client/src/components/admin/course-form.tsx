@@ -29,6 +29,7 @@ const moduleSchema = z.object({
     (url) => /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+/.test(url),
     "Please enter a valid YouTube URL (youtube.com or youtu.be)"
   ),
+  duration: z.number().min(1, "Duration must be at least 1 minute"),
   orderIndex: z.number().min(0, "Order index must be 0 or greater").optional(),
 });
 
@@ -123,6 +124,7 @@ export default function CourseForm({ course, onSuccess, onCancel }: CourseFormPr
         title: "",
         description: "",
         youtubeUrl: "",
+        duration: 1,
       },
     ]);
   };
@@ -194,10 +196,10 @@ export default function CourseForm({ course, onSuccess, onCancel }: CourseFormPr
 
     // Validate modules
     for (const module of validatedModules) {
-      if (!module.title || !module.youtubeUrl) {
+      if (!module.title || !module.youtubeUrl || !module.duration || module.duration < 1) {
         toast({
           title: "Error",
-          description: "All video modules must have title and YouTube URL",
+          description: "All video modules must have title, YouTube URL, and duration (minimum 1 minute)",
           variant: "destructive",
         });
         return;
@@ -228,44 +230,6 @@ export default function CourseForm({ course, onSuccess, onCancel }: CourseFormPr
 
   return (
     <div className="max-w-6xl mx-auto space-y-8">
-      {/* Action Header */}
-      <div className="flex justify-between items-center bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 p-6 rounded-2xl border border-orange-200 dark:border-orange-700">
-        <div className="flex items-center space-x-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl flex items-center justify-center">
-            <span className="text-white text-xl font-bold">{course ? "✏️" : "✨"}</span>
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{course ? "Edit Course" : "Create New Course"}</h2>
-            <p className="text-sm text-gray-600 dark:text-gray-400">Build engaging educational content for your students</p>
-          </div>
-        </div>
-        <div className="flex space-x-3">
-          <Button 
-            variant="outline" 
-            onClick={onCancel}
-            className="bg-white/50 border-gray-300 hover:bg-gray-50 dark:bg-gray-800/50 dark:border-gray-600 dark:hover:bg-gray-700"
-          >
-            Cancel
-          </Button>
-          <Button 
-            onClick={form.handleSubmit(onSubmit)}
-            disabled={createCourseMutation.isPending}
-            className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-200"
-          >
-            {createCourseMutation.isPending ? (
-              <>
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                {course ? "Updating..." : "Creating..."}
-              </>
-            ) : (
-              <>
-                <span className="mr-2">{course ? "💾" : "🚀"}</span>
-                {course ? "Update Course" : "Create Course"}
-              </>
-            )}
-          </Button>
-        </div>
-      </div>
 
       <Form {...form}>
         <form className="space-y-8">
@@ -446,9 +410,10 @@ export default function CourseForm({ course, onSuccess, onCancel }: CourseFormPr
                         <div className="relative">
                           <Input 
                             type="number" 
-                            placeholder="0" 
+                            placeholder="Enter price" 
                             {...field}
-                            onChange={(e) => field.onChange(Number(e.target.value))}
+                            value={field.value || ''}
+                            onChange={(e) => field.onChange(e.target.value === '' ? 0 : Number(e.target.value))}
                             className="h-12 text-lg border-2 border-gray-200 dark:border-gray-700 focus:border-purple-500 rounded-xl bg-white dark:bg-gray-800 shadow-sm pl-12"
                           />
                           <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400 font-medium">
@@ -632,6 +597,20 @@ export default function CourseForm({ course, onSuccess, onCancel }: CourseFormPr
                         value={module.youtubeUrl}
                         onChange={(e) => updateModule(index, "youtubeUrl", e.target.value)}
                         className="h-11 border-2 border-purple-200 dark:border-purple-700 focus:border-purple-500 rounded-lg bg-white dark:bg-gray-800"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold text-purple-700 dark:text-purple-300 mb-2">
+                        ⏱️ Duration (minutes)
+                      </label>
+                      <Input
+                        type="number"
+                        placeholder="Enter duration in minutes"
+                        value={module.duration || ''}
+                        onChange={(e) => updateModule(index, "duration", e.target.value === '' ? 1 : Number(e.target.value))}
+                        className="h-11 border-2 border-purple-200 dark:border-purple-700 focus:border-purple-500 rounded-lg bg-white dark:bg-gray-800"
+                        min="1"
                       />
                     </div>
 

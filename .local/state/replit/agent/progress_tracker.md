@@ -9,4 +9,6 @@
 [x] 9. Removed Replit auth integration and simplified to MongoDB-only authentication
 [x] 10. Updated button text from "Start Your Free Trial" to "Start Your Learning"
 [x] 11. Migrated project to use MongoDB only without Replit auth dependencies
-[x] 12. Inform user the import is completed and they can start building, mark the import as completed using the complete_project_import tool
+[x] 12. Fixed course publishing by adding required duration field for modules
+[x] 13. Removed duplicate create course header and fixed price input behavior
+[x] 14. Inform user the import is completed and they can start building, mark the import as completed using the complete_project_import tool
