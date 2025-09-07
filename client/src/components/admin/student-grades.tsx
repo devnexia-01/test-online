@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
-import { Edit, Plus, Award, Users, BookOpen, RefreshCw, Activity } from "lucide-react";
+import { Edit, Plus, Award, Users, BookOpen, RefreshCw, Activity, ChevronDown, ChevronRight } from "lucide-react";
 
 interface GradeFormProps {
   student: any;
@@ -37,14 +37,10 @@ function GradeForm({ student, test, existingResult, onSuccess }: GradeFormProps)
 
     try {
       const token = localStorage.getItem('token');
-      const url = existingResult 
-        ? `/api/mongo/tests/${test._id}/results/${existingResult._id}`
-        : `/api/mongo/tests/${test._id}/results`;
-      
-      const method = existingResult ? 'PUT' : 'POST';
+      const url = `/api/mongo/tests/${test._id}/results`;
       
       const response = await fetch(url, {
-        method,
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
@@ -135,6 +131,7 @@ function GradeForm({ student, test, existingResult, onSuccess }: GradeFormProps)
 }
 
 function TestGradingCard({ test, onGradeDialog, getGradeColor }: TestGradingCardProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
   const { data: students, isLoading: studentsLoading } = useQuery<any[]>({
     queryKey: ["/api/mongo/admin/course", test.course?._id, "students"],
     queryFn: async () => {
@@ -198,12 +195,32 @@ function TestGradingCard({ test, onGradeDialog, getGradeColor }: TestGradingCard
                   
                   {/* Enhanced Title Text */}
                   <div className="space-y-1">
-                    <span className="bg-gradient-to-r from-gray-900 via-indigo-800 to-purple-800 dark:from-white dark:via-blue-200 dark:to-purple-200 bg-clip-text text-transparent font-black">
-                      {test.title}
-                    </span>
+                    <div className="flex items-center space-x-3">
+                      <span className="bg-gradient-to-r from-gray-900 via-indigo-800 to-purple-800 dark:from-white dark:via-blue-200 dark:to-purple-200 bg-clip-text text-transparent font-black">
+                        {test.title}
+                      </span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setIsExpanded(!isExpanded)}
+                        className="p-1 h-8 w-8 hover:bg-indigo-100 dark:hover:bg-indigo-900/20"
+                        data-testid={`toggle-test-${test._id}`}
+                      >
+                        {isExpanded ? (
+                          <ChevronDown className="h-4 w-4 text-indigo-600" />
+                        ) : (
+                          <ChevronRight className="h-4 w-4 text-indigo-600" />
+                        )}
+                      </Button>
+                    </div>
                     <div className="flex items-center space-x-2">
                       <div className="px-2 py-1 bg-gradient-to-r from-indigo-100 to-purple-100 dark:from-indigo-900/50 dark:to-purple-900/50 rounded-md border border-indigo-200 dark:border-indigo-700">
                         <span className="text-indigo-700 dark:text-indigo-300 text-xs font-bold">Test Assessment</span>
+                      </div>
+                      <div className="px-2 py-1 bg-gradient-to-r from-green-100 to-blue-100 dark:from-green-900/50 dark:to-blue-900/50 rounded-md border border-green-200 dark:border-green-700">
+                        <span className="text-green-700 dark:text-green-300 text-xs font-bold">
+                          {isExpanded ? 'Expanded' : 'Collapsed'}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -267,7 +284,8 @@ function TestGradingCard({ test, onGradeDialog, getGradeColor }: TestGradingCard
           </div>
         </CardHeader>
       </div>
-      <CardContent>
+      {isExpanded && (
+        <CardContent>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -349,7 +367,8 @@ function TestGradingCard({ test, onGradeDialog, getGradeColor }: TestGradingCard
             </div>
           )}
         </div>
-      </CardContent>
+        </CardContent>
+      )}
     </Card>
   );
 }
