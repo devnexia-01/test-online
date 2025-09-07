@@ -163,28 +163,19 @@ function TestGradingCard({ test, onGradeDialog, getGradeColor }: TestGradingCard
   }
 
   return (
-    <Card className="relative group overflow-hidden border-0 shadow-lg">
-      {/* Main Card Container */}
-      <div className="relative bg-gradient-to-br from-white/95 via-blue-50/90 to-indigo-50/80 dark:from-gray-900/95 dark:via-blue-900/30 dark:to-indigo-900/20 backdrop-blur-xl rounded-lg border border-white/20 dark:border-gray-700/30">
-        <CardHeader className="relative p-3">
+    <Card className="hover:shadow-lg transition-shadow duration-300">
+      <CardHeader className="pb-4">
           
           <div className="flex justify-between items-start pt-2">
             <div className="flex-1 space-y-2">
               {/* Enhanced Title Section */}
               <div className="relative">
-                <CardTitle className="text-lg font-bold flex items-center gap-2 group/title">
-                  {/* Enhanced Icon Container */}
-                  <div className="relative group/icon">
-                    <div className="relative w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-md">
-                      <BookOpen className="h-4 w-4 text-white" />
-                    </div>
+                <CardTitle className="text-xl font-bold text-gray-900 dark:text-white flex items-center space-x-2">
+                  <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
+                    <BookOpen className="w-5 h-5 text-blue-600" />
                   </div>
-                  
-                  {/* Enhanced Title Text */}
                   <div className="flex items-center space-x-2">
-                    <span className="bg-gradient-to-r from-gray-900 via-indigo-800 to-purple-800 dark:from-white dark:via-blue-200 dark:to-purple-200 bg-clip-text text-transparent font-bold">
-                      {test.title}
-                    </span>
+                    <span>{test.title}</span>
                     <Button
                       variant="ghost"
                       size="sm"
@@ -201,57 +192,22 @@ function TestGradingCard({ test, onGradeDialog, getGradeColor }: TestGradingCard
                   </div>
                 </CardTitle>
                 
-                {/* Enhanced Course Information */}
-                <div className="mt-2 space-y-2">
-                  <div className="flex items-center space-x-2">
-                    <div className="flex items-center space-x-2 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 px-2 py-1 rounded-md border border-blue-200/50 dark:border-blue-800/50 backdrop-blur-sm">
-                      <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
-                      <span className="text-blue-800 dark:text-blue-200 font-medium text-xs">{test.course?.title}</span>
-                    </div>
-                    <div className="flex items-center space-x-1 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 px-2 py-1 rounded-md border border-purple-200/50 dark:border-purple-800/50 backdrop-blur-sm">
-                      <div className="w-5 h-5 bg-gradient-to-br from-purple-500 to-pink-500 rounded-md flex items-center justify-center">
-                        <span className="text-white font-bold text-xs">{test.maxScore || 100}</span>
-                      </div>
-                      <span className="text-purple-800 dark:text-purple-200 font-medium text-xs">Max</span>
-                    </div>
-                  </div>
-                </div>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                  Course: {test.course?.title} • Max Score: {test.maxScore || 100} points
+                </p>
               </div>
             </div>
             
-            {/* Enhanced Completion Badge */}
-            <div className="relative ml-3">
-              <div className="bg-gradient-to-r from-white/90 to-green-50/90 dark:from-gray-800/90 dark:to-green-900/30 backdrop-blur-sm rounded-lg border border-green-200/50 dark:border-green-800/50 p-2 shadow-sm">
-                <div className="text-center space-y-1">
-                  <div className="flex items-center justify-center space-x-1">
-                    <div className="w-6 h-6 bg-gradient-to-br from-green-500 to-blue-500 rounded-full flex items-center justify-center">
-                      <span className="text-white font-bold text-xs">{test.results?.length || 0}</span>
-                    </div>
-                    <span className="text-gray-400 dark:text-gray-500 text-xs">/</span>
-                    <div className="w-6 h-6 bg-gradient-to-br from-gray-400 to-gray-500 rounded-full flex items-center justify-center">
-                      <span className="text-white font-bold text-xs">{students?.length || 0}</span>
-                    </div>
-                  </div>
-                  <div className="space-y-1">
-                    <div className="text-xs font-bold text-green-800 dark:text-green-200">Done</div>
-                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1">
-                      <div 
-                        className="bg-gradient-to-r from-green-500 to-blue-500 h-1 rounded-full transition-all duration-300" 
-                        style={{ width: `${students?.length ? Math.min(((test.results?.length || 0) / students.length) * 100, 100) : 0}%` }}
-                      ></div>
-                    </div>
-                    <div className="text-xs text-gray-600 dark:text-gray-400 font-medium">
-                      {students?.length ? Math.min(Math.round(((test.results?.length || 0) / students.length) * 100), 100) : 0}%
-                    </div>
-                  </div>
-                </div>
+            <div className="text-right">
+              <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                {test.results?.length || 0}/{students?.length || 0}
               </div>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Completed</p>
             </div>
           </div>
         </CardHeader>
-      </div>
       {isExpanded && (
-        <CardContent className="p-3">
+        <CardContent className="p-6">
         <div className="overflow-x-auto">
           <table className="w-full text-xs">
             <thead>
@@ -396,32 +352,27 @@ export default function StudentGrades() {
 
   return (
     <div className="space-y-6">
-      {/* Enhanced Header with Real-time Indicators */}
-      <div className="rounded-3xl border border-white/20 shadow-2xl overflow-hidden bg-gradient-to-r from-purple-50/50 via-pink-50/50 to-rose-50/50 dark:from-purple-900/20 dark:via-pink-900/20 dark:to-rose-900/20">
-        <div className="h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-rose-500" />
-        <div className="bg-gradient-to-r from-white/10 to-white/5 backdrop-blur-sm">
-          <div className="p-8">
-            <div className="flex flex-col lg:flex-row gap-6 justify-between items-start lg:items-center">
-              <div className="flex-1">
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                  Student Grade Management
-                </h1>
-                <p className="text-gray-600 dark:text-gray-300 mt-2">
-                  Manage and track student performance across all courses with real-time updates
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-3">
-                <div className="flex items-center space-x-2 bg-green-50 dark:bg-green-900/20 px-4 py-2 rounded-xl border border-green-200 dark:border-green-800">
-                  <div className="w-2 h-2 bg-green-500 rounded-full" />
-                  <span className="text-green-800 dark:text-green-200 text-sm font-medium">Live Updates</span>
-                </div>
-                <div className="flex items-center space-x-2 bg-purple-50 dark:bg-purple-900/20 px-4 py-2 rounded-xl border border-purple-200 dark:border-purple-800">
-                  <Users className="h-4 w-4 text-purple-600" />
-                  <span className="text-purple-800 dark:text-purple-200 text-sm font-medium">Course-Specific</span>
-                </div>
-                <div className="flex items-center space-x-2 bg-blue-50 dark:bg-blue-900/20 px-4 py-2 rounded-xl border border-blue-200 dark:border-blue-800">
-                  <BookOpen className="h-4 w-4 text-blue-600" />
-                  <span className="text-blue-800 dark:text-blue-200 text-sm font-medium">{tests?.length || 0} Tests</span>
+      {/* Header */}
+      <div className="relative group">
+        <div className="relative rounded-3xl border border-white/20 shadow-2xl overflow-hidden bg-gradient-to-br from-white/90 via-blue-50/80 to-purple-50/60 dark:from-gray-900/90 dark:via-blue-900/30 dark:to-purple-900/20 backdrop-blur-xl">
+          <div className="h-2 bg-gradient-to-r from-blue-500 via-indigo-500 via-purple-500 to-pink-500 relative"></div>
+          <div className="relative bg-gradient-to-r from-white/20 via-white/10 to-white/5 backdrop-blur-sm">
+            <div className="p-10">
+              <div className="flex flex-col lg:flex-row gap-8 justify-between items-start lg:items-center">
+                <div className="flex items-center space-x-8">
+                  <div className="relative group/icon">
+                    <div className="relative w-24 h-24 rounded-3xl bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 flex items-center justify-center shadow-2xl">
+                      <GraduationCap className="w-12 h-12 text-white drop-shadow-lg" />
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <h2 className="text-4xl font-black bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 dark:from-white dark:via-blue-200 dark:to-purple-200 bg-clip-text text-transparent">
+                      Student Grading
+                    </h2>
+                    <p className="text-gray-600 dark:text-gray-300 text-xl font-medium max-w-md">
+                      Manage and track student performance across all courses
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
