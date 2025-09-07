@@ -16,6 +16,8 @@ export default function TestResults() {
   const [selectedCourse, setSelectedCourse] = useState("all");
   const [selectedStudent, setSelectedStudent] = useState<any>(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [modalTestFilter, setModalTestFilter] = useState("all");
+  const [modalCourseFilter, setModalCourseFilter] = useState("all");
   const queryClient = useQueryClient();
   
   // Get test results based on user role (no automatic refresh)
@@ -390,6 +392,8 @@ export default function TestResults() {
               }`}
               onClick={() => {
                 setSelectedStudent(studentData);
+                setModalTestFilter("all");
+                setModalCourseFilter("all");
                 setIsDetailModalOpen(true);
               }}
             >
@@ -683,7 +687,25 @@ export default function TestResults() {
             </div>
           </DialogHeader>
 
-          {selectedStudent && (
+          {selectedStudent && (() => {
+            // Filter logic for modal
+            const getUniqueTestTitles = () => {
+              const titles = selectedStudent.testResults?.map((t: any) => t.testTitle).filter(Boolean) || [];
+              return Array.from(new Set(titles));
+            };
+            
+            const getUniqueCourses = () => {
+              const courses = selectedStudent.testResults?.map((t: any) => t.course?.title).filter(Boolean) || [];
+              return Array.from(new Set(courses));
+            };
+            
+            const filteredModalResults = selectedStudent.testResults?.filter((testResult: any) => {
+              const matchesTest = modalTestFilter === "all" || testResult.testTitle === modalTestFilter;
+              const matchesCourse = modalCourseFilter === "all" || testResult.course?.title === modalCourseFilter;
+              return matchesTest && matchesCourse;
+            }) || [];
+            
+            return (
             <div className="space-y-6">
               {/* Student Info Header */}
               <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-6">
@@ -708,28 +730,66 @@ export default function TestResults() {
                   </div>
                 </div>
 
-                {/* Quick Stats */}
+                {/* Quick Stats for Filtered Results */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
                   <div className="bg-white/80 dark:bg-gray-800/80 rounded-lg p-4 text-center">
                     <div className="text-2xl font-bold text-blue-600">
-                      {selectedStudent.testResults?.length || 0}
+                      {filteredModalResults.length}
                     </div>
-                    <div className="text-sm text-gray-600 dark:text-gray-300">Total Tests</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-300">Filtered Tests</div>
                   </div>
                   <div className="bg-white/80 dark:bg-gray-800/80 rounded-lg p-4 text-center">
                     <div className="text-2xl font-bold text-green-600">
-                      {selectedStudent.testResults?.filter((t: any) => t.result).length || 0}
+                      {filteredModalResults.filter((t: any) => t.result).length}
                     </div>
                     <div className="text-sm text-gray-600 dark:text-gray-300">Completed</div>
                   </div>
                   <div className="bg-white/80 dark:bg-gray-800/80 rounded-lg p-4 text-center">
                     <div className="text-2xl font-bold text-purple-600">
-                      {selectedStudent.testResults?.length > 0 
-                        ? Math.round((selectedStudent.testResults.filter((t: any) => t.result).length / selectedStudent.testResults.length) * 100)
+                      {filteredModalResults.length > 0 
+                        ? Math.round((filteredModalResults.filter((t: any) => t.result).length / filteredModalResults.length) * 100)
                         : 0}%
                     </div>
                     <div className="text-sm text-gray-600 dark:text-gray-300">Completion Rate</div>
                   </div>
+                </div>
+              </div>
+              
+              {/* Filter Controls */}
+              <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700">
+                <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Filter Results</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Filter by Test</label>
+                    <Select value={modalTestFilter} onValueChange={setModalTestFilter}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select test" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Tests</SelectItem>
+                        {getUniqueTestTitles().map((testTitle) => (
+                          <SelectItem key={testTitle} value={testTitle}>{testTitle}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Filter by Course</label>
+                    <Select value={modalCourseFilter} onValueChange={setModalCourseFilter}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select course" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Courses</SelectItem>
+                        {getUniqueCourses().map((course) => (
+                          <SelectItem key={course} value={course}>{course}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="mt-3 text-sm text-gray-600 dark:text-gray-400">
+                  Showing {filteredModalResults.length} of {selectedStudent.testResults?.length || 0} test results
                 </div>
               </div>
 
@@ -740,8 +800,8 @@ export default function TestResults() {
                   <span>Detailed Test Performance</span>
                 </h4>
 
-                {selectedStudent.testResults?.length > 0 ? (
-                  selectedStudent.testResults.map((testResult: any, index: number) => (
+                {filteredModalResults.length > 0 ? (
+                  filteredModalResults.map((testResult: any, index: number) => (
                     <div
                       key={testResult.testId}
                       className={`p-6 rounded-xl border-2 ${
@@ -819,12 +879,15 @@ export default function TestResults() {
                   ))
                 ) : (
                   <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-                    No test results available for this student.
+                    {modalTestFilter === "all" && modalCourseFilter === "all" 
+                      ? "No test results available for this student."
+                      : "No test results match the selected filters."}
                   </div>
                 )}
               </div>
             </div>
-          )}
+            );
+          })()}
         </DialogContent>
       </Dialog>
     </div>
