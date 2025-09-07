@@ -167,7 +167,7 @@ export default function Landing() {
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <Card className="bg-gradient-to-br from-violet-500/20 to-purple-600/20 backdrop-blur-sm border border-violet-300/30 hover:bg-violet-500/30 transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/20">
+            <Card className="bg-gradient-to-br from-violet-500 to-purple-600 backdrop-blur-sm border-0 hover:from-violet-600 hover:to-purple-700 transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/25">
               <CardContent className="p-8 text-center">
                 <div className="w-16 h-16 bg-gradient-to-br from-violet-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
                   <Brain className="h-8 w-8 text-white" />
@@ -179,7 +179,7 @@ export default function Landing() {
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-br from-cyan-500/20 to-blue-600/20 backdrop-blur-sm border border-cyan-300/30 hover:bg-cyan-500/30 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/20">
+            <Card className="bg-gradient-to-br from-cyan-400 to-blue-500 backdrop-blur-sm border-0 hover:from-cyan-500 hover:to-blue-600 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/25">
               <CardContent className="p-8 text-center">
                 <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
                   <Clock className="h-8 w-8 text-white" />
@@ -191,7 +191,7 @@ export default function Landing() {
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-br from-green-500/20 to-emerald-600/20 backdrop-blur-sm border border-green-300/30 hover:bg-green-500/30 transition-all duration-300 hover:shadow-xl hover:shadow-green-500/20">
+            <Card className="bg-gradient-to-br from-green-400 to-emerald-500 backdrop-blur-sm border-0 hover:from-green-500 hover:to-emerald-600 transition-all duration-300 hover:shadow-xl hover:shadow-green-500/25">
               <CardContent className="p-8 text-center">
                 <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
                   <Award className="h-8 w-8 text-white" />
@@ -203,7 +203,7 @@ export default function Landing() {
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-br from-yellow-500/20 to-orange-600/20 backdrop-blur-sm border border-yellow-300/30 hover:bg-yellow-500/30 transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/20">
+            <Card className="bg-gradient-to-br from-orange-400 to-yellow-500 backdrop-blur-sm border-0 hover:from-orange-500 hover:to-yellow-600 transition-all duration-300 hover:shadow-xl hover:shadow-orange-500/25">
               <CardContent className="p-8 text-center">
                 <div className="w-16 h-16 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
                   <Users className="h-8 w-8 text-white" />
@@ -215,7 +215,7 @@ export default function Landing() {
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-br from-pink-500/20 to-rose-600/20 backdrop-blur-sm border border-pink-300/30 hover:bg-pink-500/30 transition-all duration-300 hover:shadow-xl hover:shadow-pink-500/20">
+            <Card className="bg-gradient-to-br from-pink-400 to-rose-500 backdrop-blur-sm border-0 hover:from-pink-500 hover:to-rose-600 transition-all duration-300 hover:shadow-xl hover:shadow-pink-500/25">
               <CardContent className="p-8 text-center">
                 <div className="w-16 h-16 bg-gradient-to-br from-pink-500 to-rose-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
                   <Shield className="h-8 w-8 text-white" />
@@ -227,7 +227,7 @@ export default function Landing() {
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-br from-purple-500/20 to-indigo-600/20 backdrop-blur-sm border border-purple-300/30 hover:bg-purple-500/30 transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/20">
+            <Card className="bg-gradient-to-br from-purple-500 to-indigo-600 backdrop-blur-sm border-0 hover:from-purple-600 hover:to-indigo-700 transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/25">
               <CardContent className="p-8 text-center">
                 <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
                   <Globe className="h-8 w-8 text-white" />
