@@ -519,54 +519,54 @@ export default function TestResults() {
                       return (
                         <div 
                           key={testResult.testId} 
-                          className={`p-6 rounded-2xl border-2 transition-all duration-300 hover:shadow-lg ${
+                          className={`p-3 rounded-xl border transition-all duration-300 hover:shadow-md ${
                             testResult.result 
                               ? 'border-green-200 dark:border-green-800 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 hover:shadow-green-200/50' 
                               : 'border-gray-200 dark:border-gray-700 bg-gradient-to-r from-gray-50 to-slate-50 dark:from-gray-800/20 dark:to-slate-800/20 hover:shadow-gray-200/50'
                           }`}
                         >
-                          <div className="flex flex-col lg:flex-row gap-4 justify-between items-start lg:items-center">
-                            <div className="flex-1 space-y-2">
-                              <div className="flex items-center space-x-3">
-                                <div className={`p-2 rounded-lg ${
+                          <div className="flex flex-col lg:flex-row gap-2 justify-between items-start lg:items-center">
+                            <div className="flex-1 space-y-1">
+                              <div className="flex items-center space-x-2">
+                                <div className={`p-1 rounded-md ${
                                   testResult.result ? 'bg-green-500' : 'bg-gray-400'
                                 }`}>
-                                  <BookOpen className="h-4 w-4 text-white" />
+                                  <BookOpen className="h-3 w-3 text-white" />
                                 </div>
                                 <div>
-                                  <h4 className="font-bold text-lg text-gray-900 dark:text-white">
+                                  <h4 className="font-bold text-base text-gray-900 dark:text-white">
                                     {testResult.testTitle}
                                   </h4>
-                                  <p className="text-sm text-gray-600 dark:text-gray-300 font-medium">
+                                  <p className="text-xs text-gray-600 dark:text-gray-300 font-medium">
                                     {testResult.course?.title} • <span className="text-purple-600 dark:text-purple-400">{testResult.course?.category}</span>
                                   </p>
                                 </div>
                               </div>
                             </div>
                             
-                            <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-1 sm:space-y-0 sm:space-x-2">
                               {testResult.result ? (
                                 <>
-                                  <div className="bg-white dark:bg-gray-800 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-600 shadow-sm">
+                                  <div className="bg-white dark:bg-gray-800 px-2 py-1 rounded-lg border border-gray-200 dark:border-gray-600 shadow-sm">
                                     <div className="text-center">
-                                      <div className="text-lg font-bold text-gray-900 dark:text-white">
+                                      <div className="text-sm font-bold text-gray-900 dark:text-white">
                                         {testResult.result.score}<span className="text-gray-500 dark:text-gray-400">/{testResult.maxScore}</span>
                                       </div>
                                       <div className="text-xs text-gray-500 dark:text-gray-400 font-medium">
-                                        {percentage}% Score
+                                        {percentage}%
                                       </div>
                                     </div>
                                   </div>
                                   
-                                  <Badge className={`${getGradeColor(testResult.result.grade)} px-4 py-2 text-sm font-bold shadow-lg`}>
-                                    Grade: {testResult.result.grade}
+                                  <Badge className={`${getGradeColor(testResult.result.grade)} px-2 py-1 text-xs font-bold shadow-sm`}>
+                                    {testResult.result.grade}
                                   </Badge>
                                   
-                                  <div className="bg-blue-50 dark:bg-blue-900/20 px-3 py-2 rounded-xl border border-blue-200 dark:border-blue-800">
-                                    <div className="flex items-center space-x-2 text-blue-700 dark:text-blue-300">
-                                      <Calendar className="h-4 w-4" />
-                                      <span className="text-sm font-medium">
-                                        {formatDate(testResult.result.completedAt)}
+                                  <div className="bg-blue-50 dark:bg-blue-900/20 px-2 py-1 rounded-lg border border-blue-200 dark:border-blue-800">
+                                    <div className="flex items-center space-x-1 text-blue-700 dark:text-blue-300">
+                                      <Calendar className="h-3 w-3" />
+                                      <span className="text-xs font-medium">
+                                        {formatDate(testResult.result.completedAt).split(',')[0]}
                                       </span>
                                     </div>
                                   </div>
