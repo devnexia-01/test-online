@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { formatDate, getGradeColor } from "@/lib/utils";
 import Sidebar from "@/components/sidebar";
-import { BookOpen, Calendar, Award, User, Trophy, TrendingUp, Target, CheckCircle, RefreshCw, Activity, X, Mail, Clock, GraduationCap } from "lucide-react";
+import { BookOpen, Calendar, Award, User, Trophy, TrendingUp, Target, CheckCircle, RefreshCw, Activity, X, Mail, Clock, GraduationCap, ChevronDown, ChevronUp } from "lucide-react";
 
 export default function TestResults() {
   const { user, isAdmin } = useAuth();
@@ -18,6 +18,7 @@ export default function TestResults() {
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [modalTestFilter, setModalTestFilter] = useState("all");
   const [modalCourseFilter, setModalCourseFilter] = useState("all");
+  const [expandedStudents, setExpandedStudents] = useState<Set<string>>(new Set());
   const queryClient = useQueryClient();
   
   // Get test results based on user role (no automatic refresh)
@@ -382,20 +383,35 @@ export default function TestResults() {
         <div className="space-y-6">
         {isAdmin ? (
           // Admin view: Show filtered students and their results based on selected course
-          filteredTestResults?.map((studentData: any, index: number) => (
+          filteredTestResults?.map((studentData: any, index: number) => {
+            const isExpanded = expandedStudents.has(studentData.student._id);
+            
+            const toggleExpanded = (e: React.MouseEvent) => {
+              e.stopPropagation();
+              const newExpanded = new Set(expandedStudents);
+              if (isExpanded) {
+                newExpanded.delete(studentData.student._id);
+              } else {
+                newExpanded.add(studentData.student._id);
+              }
+              setExpandedStudents(newExpanded);
+            };
+            
+            const openModal = () => {
+              setSelectedStudent(studentData);
+              setModalTestFilter("all");
+              setModalCourseFilter("all");
+              setIsDetailModalOpen(true);
+            };
+            
+            return (
             <div 
               key={studentData.student._id} 
-              className={`rounded-3xl border border-white/20 shadow-2xl overflow-hidden cursor-pointer hover:scale-[1.02] transition-all duration-300 ${
+              className={`rounded-3xl border border-white/20 shadow-2xl overflow-hidden transition-all duration-300 ${
                 index % 2 === 0 
                   ? 'bg-gradient-to-r from-green-500/10 to-emerald-500/10' 
                   : 'bg-gradient-to-r from-blue-500/10 to-indigo-500/10'
               }`}
-              onClick={() => {
-                setSelectedStudent(studentData);
-                setModalTestFilter("all");
-                setModalCourseFilter("all");
-                setIsDetailModalOpen(true);
-              }}
             >
               <div className="bg-gradient-to-r from-white/5 to-white/10 backdrop-blur-sm">
                 <CardHeader className="pb-4">
@@ -420,11 +436,14 @@ export default function TestResults() {
                     </div>
                     
                     <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
-                      <div className={`px-4 py-2 rounded-xl border shadow-lg ${
-                        index % 2 === 0 
-                          ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800' 
-                          : 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800'
-                      }`}>
+                      <div 
+                        className={`px-4 py-2 rounded-xl border shadow-lg cursor-pointer hover:scale-105 transition-transform ${
+                          index % 2 === 0 
+                            ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800' 
+                            : 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800'
+                        }`}
+                        onClick={openModal}
+                      >
                         <div className="flex items-center space-x-2">
                           <Award className={`h-4 w-4 ${
                             index % 2 === 0 ? 'text-green-600' : 'text-blue-600'
@@ -438,6 +457,20 @@ export default function TestResults() {
                           </span>
                         </div>
                       </div>
+                      
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={toggleExpanded}
+                        className={`flex items-center space-x-1 ${
+                          index % 2 === 0 ? 'text-green-600 hover:text-green-700' : 'text-blue-600 hover:text-blue-700'
+                        }`}
+                      >
+                        {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                        <span className="text-sm font-medium">
+                          {isExpanded ? 'Hide Details' : 'Show Details'}
+                        </span>
+                      </Button>
                       
                       {/* Progress Circle */}
                       <div className="relative w-12 h-12">
@@ -475,6 +508,7 @@ export default function TestResults() {
                     </div>
                   </div>
                 </CardHeader>
+                {isExpanded && (
                 <CardContent className="px-8 pb-8">
                   <div className="space-y-4">
                     {studentData.testResults?.map((testResult: any, testIndex: number) => {
@@ -573,9 +607,11 @@ export default function TestResults() {
                     )}
                   </div>
                 </CardContent>
+                )}
               </div>
             </div>
-          ))
+            );
+          })
         ) : (
           // Student view: Show only their own results
           <Card>
