@@ -201,7 +201,7 @@ export default function UserApprovals() {
             </div>
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {(pendingApprovals as any[])?.map((user: any, index: number) => (
               <ApprovalRequestCard 
                 key={user._id} 
@@ -245,179 +245,40 @@ function ApprovalRequestCard({ user, courses, onApprove, onReject, index }: {
     setShowCourseSelection(false);
   };
 
-  // Dynamic gradient patterns based on index
-  const getGradientPattern = (index: number) => {
-    const patterns = [
-      { bg: 'from-purple-500/10 via-indigo-500/10 to-blue-500/10', avatar: 'from-purple-500 via-indigo-500 to-blue-600', accent: 'purple' },
-      { bg: 'from-emerald-500/10 via-teal-500/10 to-cyan-500/10', avatar: 'from-emerald-500 via-teal-500 to-cyan-600', accent: 'emerald' },
-      { bg: 'from-rose-500/10 via-pink-500/10 to-fuchsia-500/10', avatar: 'from-rose-500 via-pink-500 to-fuchsia-600', accent: 'rose' },
-      { bg: 'from-amber-500/10 via-orange-500/10 to-red-500/10', avatar: 'from-amber-500 via-orange-500 to-red-600', accent: 'amber' },
-      { bg: 'from-blue-500/10 via-violet-500/10 to-purple-500/10', avatar: 'from-blue-500 via-violet-500 to-purple-600', accent: 'blue' },
-    ];
-    return patterns[index % patterns.length];
-  };
-
-  const getAccentColors = (accent: string) => {
-    const colors = {
-      purple: {
-        bg: 'bg-purple-50 dark:bg-purple-900/20',
-        border: 'border-purple-200 dark:border-purple-800',
-        text: 'text-purple-800 dark:text-purple-200',
-        icon: 'text-purple-600',
-        badge: 'bg-purple-100 text-purple-800 border-purple-300'
-      },
-      emerald: {
-        bg: 'bg-emerald-50 dark:bg-emerald-900/20',
-        border: 'border-emerald-200 dark:border-emerald-800',
-        text: 'text-emerald-800 dark:text-emerald-200',
-        icon: 'text-emerald-600',
-        badge: 'bg-emerald-100 text-emerald-800 border-emerald-300'
-      },
-      rose: {
-        bg: 'bg-rose-50 dark:bg-rose-900/20',
-        border: 'border-rose-200 dark:border-rose-800',
-        text: 'text-rose-800 dark:text-rose-200',
-        icon: 'text-rose-600',
-        badge: 'bg-rose-100 text-rose-800 border-rose-300'
-      },
-      amber: {
-        bg: 'bg-amber-50 dark:bg-amber-900/20',
-        border: 'border-amber-200 dark:border-amber-800',
-        text: 'text-amber-800 dark:text-amber-200',
-        icon: 'text-amber-600',
-        badge: 'bg-amber-100 text-amber-800 border-amber-300'
-      },
-      blue: {
-        bg: 'bg-blue-50 dark:bg-blue-900/20',
-        border: 'border-blue-200 dark:border-blue-800',
-        text: 'text-blue-800 dark:text-blue-200',
-        icon: 'text-blue-600',
-        badge: 'bg-blue-100 text-blue-800 border-blue-300'
-      }
-    };
-    return colors[accent as keyof typeof colors];
-  };
-
-  const pattern = getGradientPattern(index);
-  const accentColors = getAccentColors(pattern.accent);
+  const waitDays = Math.floor((Date.now() - new Date(user.createdAt).getTime()) / (1000 * 60 * 60 * 24));
 
   return (
-    <div className={`group rounded-3xl border border-white/20 shadow-2xl overflow-hidden transition-all duration-500 hover:shadow-3xl hover:scale-[1.02] bg-gradient-to-r ${pattern.bg}`}>
-      {/* Top Border Accent */}
-      <div className={`h-1 bg-gradient-to-r ${pattern.avatar}`} />
+    <div className="group relative bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105">
+      {/* Header with gradient background */}
+      <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-emerald-500 via-green-500 to-teal-500 rounded-t-xl"></div>
       
-      {/* Main Content */}
-      <div className="bg-gradient-to-r from-white/5 to-white/10 backdrop-blur-sm">
-        <div className="p-8">
-          {/* Modern Grid Layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            
-            {/* User Profile Section - Enhanced */}
-            <div className="lg:col-span-7">
-              <div className="flex items-start space-x-6">
-                {/* Avatar with Floating Animation */}
-                <div className="relative group">
-                  <div className={`w-24 h-24 rounded-3xl flex items-center justify-center shadow-2xl bg-gradient-to-br ${pattern.avatar} transform transition-all duration-500 group-hover:scale-110 group-hover:rotate-3`}>
-                    <UserCheck className="w-12 h-12 text-white" />
-                  </div>
-                  {/* Floating Ring */}
-                  <div className={`absolute inset-0 rounded-3xl bg-gradient-to-br ${pattern.avatar} opacity-30 animate-pulse`} />
-                </div>
-                
-                {/* User Details */}
-                <div className="flex-1 space-y-3">
-                  <div>
-                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
-                      {user.firstName} {user.lastName}
-                    </h3>
-                    <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-300">
-                      <Mail className="h-4 w-4" />
-                      <span className="font-medium">{user.email}</span>
-                    </div>
-                  </div>
-                  
-                  {/* Enhanced User Info Grid */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
-                    <div className="flex items-center space-x-2 text-gray-500 dark:text-gray-400">
-                      <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
-                      <span className="text-sm font-medium">@{user.username}</span>
-                    </div>
-                    <div className="flex items-center space-x-2 text-gray-500 dark:text-gray-400">
-                      <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                      <span className="text-sm font-medium">Student Role</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            {/* Request Info Section - Enhanced */}
-            <div className="lg:col-span-5 space-y-4">
-              {/* Request Date Card */}
-              <div className={`p-4 rounded-2xl border shadow-lg ${accentColors.bg} ${accentColors.border} transform transition-all duration-300 hover:scale-105`}>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <Calendar className={`h-5 w-5 ${accentColors.icon}`} />
-                    <div>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">Registration Date</p>
-                      <p className={`text-sm font-bold ${accentColors.text}`}>
-                        {new Date(user.createdAt).toLocaleDateString('en-US', { 
-                          year: 'numeric', 
-                          month: 'short', 
-                          day: 'numeric' 
-                        })}
-                      </p>
-                    </div>
-                  </div>
-                  <Badge className={`px-3 py-1 text-xs font-medium ${accentColors.badge} animate-pulse`}>
-                    ⏳ Pending Review
-                  </Badge>
-                </div>
-              </div>
-              
-              {/* Quick Stats */}
-              <div className="grid grid-cols-2 gap-3">
-                <div className="bg-white/50 dark:bg-gray-800/50 p-3 rounded-xl border border-gray-200 dark:border-gray-700">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
-                      <Clock className="w-4 h-4 text-blue-600" />
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">Wait Time</p>
-                      <p className="text-sm font-bold text-gray-900 dark:text-white">
-                        {Math.floor((Date.now() - new Date(user.createdAt).getTime()) / (1000 * 60 * 60 * 24))} days
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="bg-white/50 dark:bg-gray-800/50 p-3 rounded-xl border border-gray-200 dark:border-gray-700">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
-                      <BookOpen className="w-4 h-4 text-green-600" />
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">Courses</p>
-                      <p className="text-sm font-bold text-gray-900 dark:text-white">{courses.length} Available</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+      {/* User Icon */}
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center space-x-3">
+          <div className="w-12 h-12 bg-gradient-to-br from-emerald-100 to-green-100 dark:from-emerald-900 dark:to-green-900 rounded-lg flex items-center justify-center">
+            <UserCheck className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
           </div>
-
-          {/* Action Buttons - Enhanced */}
-          <div className="flex flex-col sm:flex-row gap-4 mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
-            <Dialog open={showCourseSelection} onOpenChange={setShowCourseSelection}>
-              <DialogTrigger asChild>
-                <Button 
-                  size="lg" 
-                  className="flex-1 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
-                >
-                  <Award className="w-5 h-5 mr-3" />
-                  Approve & Enroll in Courses
-                </Button>
-              </DialogTrigger>
+          <div>
+            <h4 className="font-bold text-gray-900 dark:text-white text-lg leading-tight">
+              {user.firstName} {user.lastName}
+            </h4>
+            <p className="text-sm text-gray-500 dark:text-gray-400">{user.email}</p>
+          </div>
+        </div>
+        
+        {/* Action Buttons */}
+        <div className="flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10 relative">
+          <Dialog open={showCourseSelection} onOpenChange={setShowCourseSelection}>
+            <DialogTrigger asChild>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="h-8 w-8 p-0 hover:bg-emerald-50 dark:hover:bg-emerald-900" 
+                title="Approve User"
+              >
+                <UserCheck className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+              </Button>
+            </DialogTrigger>
               <DialogContent className="max-w-2xl">
                 <DialogHeader>
                   <DialogTitle className="text-2xl font-bold flex items-center space-x-2">
@@ -485,18 +346,55 @@ function ApprovalRequestCard({ user, courses, onApprove, onReject, index }: {
               </DialogContent>
             </Dialog>
 
-            <Button 
-              size="lg" 
-              variant="destructive"
-              onClick={() => onReject(user._id)}
-              className="sm:w-auto bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
-            >
-              <UserX className="w-5 h-5 mr-3" />
-              Reject Request
-            </Button>
-          </div>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="h-8 w-8 p-0 hover:bg-red-50 dark:hover:bg-red-900" 
+            title="Reject User"
+            onClick={() => onReject(user._id)}
+          >
+            <UserX className="h-4 w-4 text-red-600 dark:text-red-400" />
+          </Button>
         </div>
       </div>
+
+      {/* User Details */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <span className="text-sm text-gray-600 dark:text-gray-400">Username</span>
+          <span className="text-sm font-semibold text-gray-900 dark:text-white">@{user.username}</span>
+        </div>
+        
+        <div className="flex items-center justify-between">
+          <span className="text-sm text-gray-600 dark:text-gray-400">Registered</span>
+          <span className="text-sm font-semibold text-gray-900 dark:text-white">
+            {new Date(user.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+          </span>
+        </div>
+        
+        <div className="flex items-center justify-between">
+          <span className="text-sm text-gray-600 dark:text-gray-400">Wait Time</span>
+          <Badge variant="outline" className="text-xs">
+            {waitDays} day{waitDays !== 1 ? 's' : ''}
+          </Badge>
+        </div>
+      </div>
+
+      {/* Status Badge */}
+      <div className="mt-4 pt-3 border-t border-gray-200 dark:border-gray-700">
+        <div className="flex items-center justify-between">
+          <span className="text-xs text-green-600 dark:text-green-400 font-medium flex items-center">
+            <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse" />
+            Pending Review
+          </span>
+          <span className="text-xs text-gray-500 dark:text-gray-400">
+            {courses.length} courses available
+          </span>
+        </div>
+      </div>
+
+      {/* Hover Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/0 to-green-500/0 group-hover:from-emerald-500/5 group-hover:to-green-500/5 rounded-xl transition-all duration-300 pointer-events-none"></div>
     </div>
   );
 }
