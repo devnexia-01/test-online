@@ -74,7 +74,7 @@ export default function Courses() {
     return (
       <div className="min-h-screen bg-gray-50">
         <Sidebar />
-        <main className="lg:ml-64 min-h-screen p-4 lg:p-8">
+        <main className="lg:ml-64 min-h-screen p-4 lg:p-8 pt-16 lg:pt-8">
           <div className="mb-6">
             <Skeleton className="h-8 w-48 mb-4" />
             <div className="flex space-x-3">
@@ -128,7 +128,7 @@ export default function Courses() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Sidebar />
-      <main className="ml-64 min-h-screen overflow-auto">
+      <main className="lg:ml-64 min-h-screen overflow-auto px-4 lg:px-0 pt-16 lg:pt-0">
         {/* Header Section */}
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-8">
           <div className="text-center text-white">

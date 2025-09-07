@@ -197,7 +197,7 @@ export default function Admin() {
     return (
       <div className="min-h-screen bg-gray-50">
         <Sidebar />
-        <main className="ml-64 min-h-screen p-8">
+        <main className="lg:ml-64 min-h-screen p-4 lg:p-8 pt-16 lg:pt-8">
           <div className="mb-6">
             <Skeleton className="h-8 w-48 mb-2" />
             <Skeleton className="h-6 w-64" />
@@ -215,7 +215,7 @@ export default function Admin() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-gray-900 dark:to-slate-900">
       <Sidebar />
-      <main className="ml-64 min-h-screen flex flex-col">
+      <main className="lg:ml-64 min-h-screen flex flex-col px-4 lg:px-0 pt-16 lg:pt-0">
         {/* Enhanced Admin Header */}
         <div className="relative bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 overflow-hidden">
           {/* Background decorations */}

@@ -64,7 +64,7 @@ export default function TestResults() {
     return (
       <div className="min-h-screen bg-gray-50">
         <Sidebar />
-        <main className="ml-64 min-h-screen p-8">
+        <main className="lg:ml-64 min-h-screen p-4 lg:p-8 pt-16 lg:pt-8">
           <div className="flex justify-between items-center mb-6">
             <Skeleton className="h-8 w-48" />
             <Skeleton className="h-10 w-40" />
@@ -155,7 +155,7 @@ export default function TestResults() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Sidebar />
-      <main className="ml-64 min-h-screen overflow-auto">
+      <main className="lg:ml-64 min-h-screen overflow-auto px-4 lg:px-0 pt-16 lg:pt-0">
         {/* Header Section */}
         <div className="bg-gradient-to-r from-emerald-600 to-blue-600 p-8">
           <div className="text-center text-white">

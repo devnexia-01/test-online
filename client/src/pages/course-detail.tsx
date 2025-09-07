@@ -86,7 +86,7 @@ export default function CourseDetail() {
     return (
       <div className="min-h-screen bg-gray-50">
         <Sidebar />
-        <main className="ml-64 min-h-screen p-8">
+        <main className="lg:ml-64 min-h-screen p-4 lg:p-8 pt-16 lg:pt-8">
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
             <div className="p-8">
               <div className="flex items-center justify-between mb-6">
@@ -118,7 +118,7 @@ export default function CourseDetail() {
       return (
         <div className="min-h-screen bg-gray-50">
           <Sidebar />
-          <div className="ml-64 min-h-screen flex items-center justify-center">
+          <div className="lg:ml-64 min-h-screen flex items-center justify-center px-4">
             <div className="text-center p-8">
               <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <BookOpen className="w-8 h-8 text-red-600" />
@@ -135,7 +135,7 @@ export default function CourseDetail() {
     return (
       <div className="min-h-screen bg-gray-50">
         <Sidebar />
-        <div className="ml-64 min-h-screen flex items-center justify-center">
+        <div className="lg:ml-64 min-h-screen flex items-center justify-center px-4">
           <div className="text-center p-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-2">Error Loading Course</h2>
             <p className="text-gray-600">{errorMessage}</p>
@@ -164,7 +164,7 @@ export default function CourseDetail() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
       <Sidebar />
-      <main className="ml-64 min-h-screen p-8">
+      <main className="lg:ml-64 min-h-screen p-4 lg:p-8 pt-16 lg:pt-8">
       <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-2xl border border-white/20 overflow-hidden relative">
         {/* Decorative gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-pink-500/5 pointer-events-none"></div>
