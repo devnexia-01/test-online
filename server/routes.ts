@@ -4,16 +4,50 @@ import { storage } from "./storage";
 // Using MongoDB models instead of shared schema
 import { z } from "zod";
 import mongoRoutes from "./routes/mongoRoutes.js";
-import { setupAuth, isAuthenticated, isAdmin } from "./replitAuth";
+// Removed Replit auth - using MongoDB only
+import authRoutes from "./routes/authRoutes.js";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Setup authentication (will skip OAuth for local development)
-  await setupAuth(app);
+  // Use MongoDB-only authentication routes
+  app.use('/api/auth', authRoutes);
+
+  // JWT authentication middleware
+  const verifyToken = (req: any, res: any, next: any) => {
+    const token = req.headers.authorization?.replace('Bearer ', '');
+    if (!token) {
+      return res.status(401).json({ message: 'No token provided' });
+    }
+    
+    try {
+      const jwt = require('jsonwebtoken');
+      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret');
+      req.user = decoded;
+      next();
+    } catch (error) {
+      return res.status(401).json({ message: 'Invalid token' });
+    }
+  };
+
+  // Admin middleware
+  const isAdmin = async (req: any, res: any, next: any) => {
+    try {
+      const User = (await import('./models/User.js')).default;
+      const user = await User.findById(req.user.userId);
+      if (!user || user.role !== 'admin') {
+        return res.status(403).json({ message: 'Admin access required' });
+      }
+      req.dbUser = user;
+      next();
+    } catch (error) {
+      return res.status(500).json({ message: 'Server error' });
+    }
+  };
 
   // Auth routes for user info
-  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
+  app.get('/api/auth/user', verifyToken, async (req: any, res) => {
     try {
-      const user = req.user?.dbUser;
+      const User = (await import('./models/User.js')).default;
+      const user = await User.findById(req.user.userId).populate('enrolledCourses');
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
