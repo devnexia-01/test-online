@@ -40,7 +40,7 @@ export default function Courses() {
     queryKey: [`/api/users/${userId}/enrollments`],
   });
 
-  // Real-time user-specific statistics
+  // User-specific statistics
   const { data: userStats, isLoading: statsLoading } = useQuery({
     queryKey: ["/api/mongo/user/stats"],
     queryFn: async () => {
@@ -54,7 +54,6 @@ export default function Courses() {
       }
       return response.json();
     },
-    refetchInterval: 30000, // Refresh every 30 seconds
   });
 
   const categories = ["All Categories", "Programming", "Data Science", "Mathematics"];

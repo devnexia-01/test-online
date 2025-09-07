@@ -56,8 +56,6 @@ export default function Admin() {
     activeCourses: number;
   }>({
     queryKey: ["/api/mongo/admin/stats"],
-    refetchInterval: 3000, // Refresh every 3 seconds for real-time data
-    refetchIntervalInBackground: true,
   });
 
   const { data: courses, isLoading: coursesLoading } = useQuery<any[]>({

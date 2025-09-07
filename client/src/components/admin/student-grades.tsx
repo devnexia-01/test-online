@@ -149,7 +149,6 @@ function TestGradingCard({ test, onGradeDialog, getGradeColor }: TestGradingCard
       return response.json();
     },
     enabled: !!test.course?._id,
-    refetchInterval: 3000,
   });
 
   if (studentsLoading) {
