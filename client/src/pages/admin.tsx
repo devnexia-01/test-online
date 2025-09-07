@@ -215,7 +215,7 @@ export default function Admin() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-gray-900 dark:to-slate-900">
       <Sidebar />
-      <main className="lg:ml-64 min-h-screen flex flex-col px-4 lg:px-0 pt-16 lg:pt-0">
+      <main className="lg:ml-64 min-h-screen flex flex-col px-4 lg:px-0">
         {/* Enhanced Admin Header */}
         <div className="relative bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 overflow-hidden">
           {/* Background decorations */}
