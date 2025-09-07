@@ -4,6 +4,8 @@ import cors from "cors";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { connectDB } from "./config/database.js";
+import session from "express-session";
+import MemoryStore from "memorystore";
 
 const app = express();
 
@@ -17,7 +19,7 @@ app.use(cors({
     'http://localhost:3000',
     'http://localhost:5000',
     process.env.CORS_ORIGIN
-  ].filter(Boolean),
+  ].filter(Boolean) as string[],
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']

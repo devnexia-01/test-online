@@ -3,6 +3,11 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 // Using MongoDB models instead of shared schema
 import { z } from "zod";
+import { 
+  insertCourseSchema, 
+  insertTestSchema, 
+  insertTestResultSchema 
+} from "../shared/schema.js";
 import mongoRoutes from "./routes/mongoRoutes.js";
 // Removed Replit auth - using MongoDB only
 import authRoutes from "./routes/authRoutes.js";

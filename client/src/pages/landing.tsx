@@ -255,7 +255,7 @@ export default function Landing() {
                 onClick={() => setLocation('/auth')}
               >
                 <Rocket className="mr-2 h-5 w-5" />
-                Start Your Free Trial
+                Start Your Learning
               </Button>
             </div>
           </div>
