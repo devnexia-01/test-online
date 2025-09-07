@@ -1280,6 +1280,12 @@ router.get('/admin/stats', async (req, res) => {
     const totalStudents = await User.countDocuments({ role: 'student' });
     const approvedStudents = await User.countDocuments({ role: 'student', isApproved: true });
     
+    // Debug logging for production troubleshooting
+    console.log('=== ADMIN STATS DEBUG ===');
+    console.log('Total Courses (active):', totalCourses);
+    console.log('Total Students:', totalStudents);
+    console.log('Approved Students:', approvedStudents);
+    
     // Get all enrollments for student analytics
     const enrollments = await Enrollment.find({})
       .populate('student', 'firstName lastName')
@@ -1333,7 +1339,7 @@ router.get('/admin/stats', async (req, res) => {
     const completedEnrollments = enrollments.filter(e => e.progress >= 100).length;
     const courseCompletionRate = totalEnrollments > 0 ? Math.round((completedEnrollments / totalEnrollments) * 100) : 0;
     
-    res.json({
+    const statsResponse = {
       totalCourses,
       totalStudents: totalStudents,
       studentsEnrolled: totalEnrollments,
@@ -1346,7 +1352,12 @@ router.get('/admin/stats', async (req, res) => {
       testsCompleted: totalTestResults,
       approvedStudents,
       activeCourses
-    });
+    };
+    
+    console.log('Final stats response:', statsResponse);
+    console.log('=== END ADMIN STATS DEBUG ===');
+    
+    res.json(statsResponse);
   } catch (error) {
     console.error('Admin stats error:', error);
     res.status(500).json({ message: 'Failed to fetch admin stats', error: error.message });
