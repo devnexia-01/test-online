@@ -121,7 +121,7 @@ export default function Dashboard() {
     return (
       <div className="min-h-screen bg-gray-50">
         <Sidebar />
-        <main className="ml-64 min-h-screen p-8">
+        <main className="lg:ml-64 min-h-screen p-4 lg:p-8">
           <div className="rounded-3xl border border-white/20 shadow-2xl overflow-hidden bg-gradient-to-r from-blue-50/50 via-indigo-50/50 to-purple-50/50 dark:from-blue-900/20 dark:via-indigo-900/20 dark:to-purple-900/20 mb-8">
             <div className="h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500" />
             <div className="p-8">
@@ -151,7 +151,7 @@ export default function Dashboard() {
       <Sidebar />
 
       {/* Main Content */}
-      <main className="ml-64 min-h-screen overflow-auto">
+      <main className="lg:ml-64 min-h-screen overflow-auto px-4 lg:px-0">
         <div className="p-8 space-y-8">
           {/* Enhanced Welcome Section */}
           <div className="rounded-3xl border border-white/20 shadow-2xl overflow-hidden bg-gradient-to-r from-blue-50/50 via-indigo-50/50 to-purple-50/50 dark:from-blue-900/20 dark:via-indigo-900/20 dark:to-purple-900/20">

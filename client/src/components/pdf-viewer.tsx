@@ -11,15 +11,33 @@ export default function PdfViewer({ notes }: PdfViewerProps) {
     window.open(note.pdfUrl, '_blank');
   };
 
-  const handleDownload = (note: any) => {
-    // Create a temporary link to download the PDF
-    const link = document.createElement('a');
-    link.href = note.pdfUrl;
-    link.download = `${note.title}.pdf`;
-    link.target = '_blank';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handleDownload = async (note: any) => {
+    try {
+      // Fetch the PDF file
+      const response = await fetch(note.pdfUrl);
+      if (!response.ok) throw new Error('Failed to download file');
+      
+      // Get the blob data
+      const blob = await response.blob();
+      
+      // Create a temporary link to download the PDF
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${note.title}.pdf`;
+      link.style.display = 'none';
+      
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Clean up the blob URL
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Download failed:', error);
+      // Fallback to opening in new tab if download fails
+      window.open(note.pdfUrl, '_blank');
+    }
   };
 
   return (
