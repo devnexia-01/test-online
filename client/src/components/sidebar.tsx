@@ -9,7 +9,8 @@ import {
   Settings, 
   Award,
   LogOut,
-  Menu
+  Menu,
+  User
 } from "lucide-react";
 import { useState } from "react";
 
@@ -18,6 +19,7 @@ const getSidebarItems = (userRole: string) => {
     { icon: LayoutDashboard, label: "Dashboard", route: "/dashboard" },
     { icon: BookOpen, label: "My Courses", route: "/courses" },
     { icon: Award, label: "Test Results", route: "/test-results" },
+    { icon: User, label: "Profile", route: "/profile" },
   ];
 
   if (userRole === 'admin') {

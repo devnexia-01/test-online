@@ -215,4 +215,77 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// Update user profile
+router.put('/profile', async (req, res) => {
+  try {
+    // Extract token from Authorization header
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ message: 'No token provided' });
+    }
+    
+    const token = authHeader.split(' ')[1];
+    let decoded;
+    
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret');
+    } catch (error) {
+      return res.status(401).json({ message: 'Invalid token' });
+    }
+    
+    const { firstName, lastName, username, email } = req.body;
+    
+    // Find the user
+    const user = await User.findById(decoded.userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    // Check if username or email are being changed and if they're already taken
+    if (username !== user.username) {
+      const existingUser = await User.findOne({ username, _id: { $ne: decoded.userId } });
+      if (existingUser) {
+        return res.status(400).json({ message: 'Username already taken' });
+      }
+    }
+    
+    if (email !== user.email) {
+      const existingUser = await User.findOne({ email, _id: { $ne: decoded.userId } });
+      if (existingUser) {
+        return res.status(400).json({ message: 'Email already registered' });
+      }
+    }
+    
+    // Update user fields
+    user.firstName = firstName || user.firstName;
+    user.lastName = lastName || user.lastName;
+    user.username = username || user.username;
+    user.email = email || user.email;
+    
+    await user.save();
+    
+    res.json({
+      message: 'Profile updated successfully',
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        role: user.role,
+        avatar: user.avatar,
+        profileImageUrl: user.profileImageUrl,
+        isApproved: user.isApproved,
+        emailVerified: user.emailVerified,
+        isActive: user.isActive,
+        createdAt: user.createdAt
+      }
+    });
+    
+  } catch (error) {
+    console.error('Profile update error:', error);
+    res.status(500).json({ message: 'Failed to update profile. Please try again.' });
+  }
+});
+
 export default router;

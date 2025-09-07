@@ -11,6 +11,7 @@ import Courses from "@/pages/courses";
 import CourseDetail from "@/pages/course-detail";
 import TestResults from "@/pages/test-results";
 import Admin from "@/pages/admin";
+import Profile from "@/pages/profile";
 import VideoPlayer from "@/pages/video-player";
 import Landing from "@/pages/landing";
 import AuthPage from "@/pages/auth-page";
@@ -89,6 +90,9 @@ function Router() {
           </Route>
           <Route path="/test-results">
             <TestResults />
+          </Route>
+          <Route path="/profile">
+            <Profile />
           </Route>
           {isAdmin && (
             <Route path="/admin">
