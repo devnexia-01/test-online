@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Search, Users, BookOpen, TrendingUp, Star, Clock, FileText, Trophy } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -12,13 +12,29 @@ import Sidebar from "@/components/sidebar";
 import { useAuth } from "@/hooks/useAuth";
 import type { Course, Enrollment } from "@shared/schema";
 
+interface SearchFilters {
+  query: string;
+  category: string;
+  level: string;
+  priceRange: [number, number];
+  sortBy: string;
+  sortOrder: 'asc' | 'desc';
+}
+
 export default function Courses() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [filters, setFilters] = useState<SearchFilters>({
+    query: '',
+    category: '',
+    level: '',
+    priceRange: [0, 1000],
+    sortBy: 'createdAt',
+    sortOrder: 'desc'
+  });
   const { user } = useAuth();
   
-  // Mock user ID - in real app this would come from auth context
-  const userId = 2;
+  const userId = user?.id || 2;
 
   const { data: courses, isLoading: coursesLoading, error } = useQuery<any[]>({
     queryKey: ["/api/mongo/courses"],
@@ -56,15 +72,83 @@ export default function Courses() {
     },
   });
 
-  const categories = ["All Categories", "Programming", "Data Science", "Mathematics"];
+  const categories = useMemo(() => {
+    if (!courses) return ["Programming", "Data Science", "Mathematics"];
+    const categorySet = new Set(courses.map((course: any) => course.category).filter(Boolean));
+    const uniqueCategories = Array.from(categorySet);
+    return uniqueCategories.length > 0 ? uniqueCategories : ["Programming", "Data Science", "Mathematics"];
+  }, [courses]);
 
-  const filteredCourses = courses?.filter((course) => {
-    const matchesSearch = course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         course.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === "all" || 
-                           course.category.toLowerCase() === selectedCategory.toLowerCase();
-    return matchesSearch && matchesCategory;
-  }) || [];
+  const filteredCourses = useMemo(() => {
+    if (!courses) return [];
+    
+    let filtered = courses.filter((course) => {
+      // Legacy search functionality
+      const matchesSearch = !searchTerm || (
+        course.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        course.description?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      const matchesCategory = selectedCategory === "all" || 
+                             course.category?.toLowerCase() === selectedCategory.toLowerCase();
+      
+      // Enhanced search functionality
+      const matchesAdvancedQuery = !filters.query || (
+        course.title?.toLowerCase().includes(filters.query.toLowerCase()) ||
+        course.description?.toLowerCase().includes(filters.query.toLowerCase()) ||
+        course.instructor?.firstName?.toLowerCase().includes(filters.query.toLowerCase()) ||
+        course.instructor?.lastName?.toLowerCase().includes(filters.query.toLowerCase())
+      );
+      
+      const matchesAdvancedCategory = !filters.category || course.category === filters.category;
+      const matchesLevel = !filters.level || course.level === filters.level;
+      
+      const coursePrice = course.price || 0;
+      const matchesPrice = coursePrice >= filters.priceRange[0] && coursePrice <= filters.priceRange[1];
+      
+      return matchesSearch && matchesCategory && matchesAdvancedQuery && matchesAdvancedCategory && matchesLevel && matchesPrice;
+    });
+    
+    // Enhanced sorting
+    if (filters.sortBy && filters.sortBy !== 'createdAt') {
+      filtered.sort((a, b) => {
+        let aValue, bValue;
+        
+        switch (filters.sortBy) {
+          case 'title':
+            aValue = a.title || '';
+            bValue = b.title || '';
+            break;
+          case 'price':
+            aValue = a.price || 0;
+            bValue = b.price || 0;
+            break;
+          case 'level':
+            const levelOrder = { 'Beginner': 1, 'Intermediate': 2, 'Advanced': 3 };
+            aValue = levelOrder[a.level as keyof typeof levelOrder] || 0;
+            bValue = levelOrder[b.level as keyof typeof levelOrder] || 0;
+            break;
+          case 'duration':
+            aValue = a.duration || 0;
+            bValue = b.duration || 0;
+            break;
+          default:
+            return 0;
+        }
+        
+        if (typeof aValue === 'string') {
+          return filters.sortOrder === 'asc' 
+            ? aValue.localeCompare(bValue as string)
+            : (bValue as string).localeCompare(aValue);
+        }
+        
+        return filters.sortOrder === 'asc' 
+          ? (aValue as number) - (bValue as number)
+          : (bValue as number) - (aValue as number);
+      });
+    }
+    
+    return filtered;
+  }, [courses, searchTerm, selectedCategory, filters]);
 
   const getEnrollmentForCourse = (courseId: any) => {
     return enrollments?.find(e => e.courseId === courseId);
