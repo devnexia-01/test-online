@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
-import { Edit, Plus, Award, Users, BookOpen, RefreshCw, Activity, ChevronDown, ChevronRight } from "lucide-react";
+import { Edit, Plus, Award, Users, BookOpen, RefreshCw, Activity, ChevronDown, ChevronRight, GraduationCap } from "lucide-react";
 
 interface GradeFormProps {
   student: any;

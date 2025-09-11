@@ -11,4 +11,5 @@
 [x] 11. Migrated project to use MongoDB only without Replit auth dependencies
 [x] 12. Fixed course publishing by adding required duration field for modules
 [x] 13. Removed duplicate create course header and fixed price input behavior
-[x] 14. Inform user the import is completed and they can start building, mark the import as completed using the complete_project_import tool
+[x] 14. Fixed admin grading GraduationCap import error
+[x] 15. Inform user the import is completed and they can start building, mark the import as completed using the complete_project_import tool
