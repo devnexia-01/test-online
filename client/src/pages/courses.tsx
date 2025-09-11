@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import CourseCard from "@/components/course-card";
 import { Skeleton } from "@/components/ui/skeleton";
+import Pagination, { usePagination } from "@/components/pagination";
 import Sidebar from "@/components/sidebar";
 import { useAuth } from "@/hooks/useAuth";
 import type { Course, Enrollment } from "@shared/schema";
@@ -149,6 +150,21 @@ export default function Courses() {
     
     return filtered;
   }, [courses, searchTerm, selectedCategory, filters]);
+
+  // Use the pagination hook with proper state management
+  const pagination = usePagination(filteredCourses.length, 12);
+  const paginatedCourses = pagination.getPageData(filteredCourses);
+
+  // Reset pagination when filters change (includes all count-affecting filters)
+  useEffect(() => {
+    pagination.handlePageChange(1);
+  }, [searchTerm, selectedCategory, filters.query, filters.category, filters.level, filters.priceRange, filters.sortBy, filters.sortOrder]);
+
+  const handlePageChange = (page: number) => {
+    pagination.handlePageChange(page);
+    // Smooth scroll to top when page changes
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const getEnrollmentForCourse = (courseId: any) => {
     return enrollments?.find(e => e.courseId === courseId);
@@ -402,17 +418,46 @@ export default function Courses() {
             </div>
           </div>
 
+          {/* Results Summary */}
+          {filteredCourses.length > 0 && (
+            <div className="mb-6">
+              <p className="text-gray-600 dark:text-gray-400" data-testid="results-summary">
+                Found {filteredCourses.length} course{filteredCourses.length !== 1 ? 's' : ''}
+                {(searchTerm || selectedCategory !== "all" || filters.query || filters.category || filters.level) && ' matching your criteria'}
+              </p>
+            </div>
+          )}
+
           {/* Course Grid */}
           {filteredCourses.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredCourses.map((course) => (
-                <CourseCard 
-                  key={course._id || course.id} 
-                  course={course} 
-                  enrollment={getEnrollmentForCourse(course.id)}
-                />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" data-testid="courses-grid">
+                {paginatedCourses.map((course) => (
+                  <CourseCard 
+                    key={course._id || course.id} 
+                    course={course} 
+                    enrollment={getEnrollmentForCourse(course.id)}
+                    data-testid={`course-card-${course._id || course.id}`}
+                  />
+                ))}
+              </div>
+
+              {/* Pagination */}
+              {filteredCourses.length > pagination.itemsPerPage && (
+                <div className="mt-12">
+                  <Pagination
+                    currentPage={pagination.currentPage}
+                    totalPages={pagination.totalPages}
+                    totalItems={filteredCourses.length}
+                    itemsPerPage={pagination.itemsPerPage}
+                    onPageChange={handlePageChange}
+                    onItemsPerPageChange={pagination.handleItemsPerPageChange}
+                    itemsPerPageOptions={[12, 20, 24, 50]}
+                    className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm"
+                  />
+                </div>
+              )}
+            </>
           ) : (
             <Card className="text-center py-16">
               <CardContent>

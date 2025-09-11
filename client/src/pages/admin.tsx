@@ -12,6 +12,7 @@ import UserApprovals from "@/components/admin/user-approvals";
 import UserManagement from "@/components/admin/user-management";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
+import Pagination, { usePagination } from "@/components/pagination";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDate, getGradeColor } from "@/lib/utils";
 import { apiRequest } from "@/lib/queryClient";
@@ -58,6 +59,7 @@ export default function Admin() {
   const [editingTest, setEditingTest] = useState<any>(null);
   const [activeTab, setActiveTab] = useState("analytics");
 
+  // Fetch all data first before using in pagination hooks
   const { data: adminStats, isLoading: statsLoading, refetch: refetchStats } = useQuery<{
     totalCourses: number;
     totalStudents: number;
@@ -94,6 +96,11 @@ export default function Admin() {
   const { data: pendingApprovals, isLoading: approvalsLoading } = useQuery<any[]>({
     queryKey: ["/api/mongo/admin/pending-approvals"],
   });
+
+  // Pagination hooks for different sections (after data is declared)
+  const coursePagination = usePagination((courses as any[])?.length || 0, 10);
+  const studentPagination = usePagination((users as any[])?.length || 0, 10);
+  const testResultPagination = usePagination((studentResults as any[])?.length || 0, 15);
 
   // Delete test mutation
   const deleteTestMutation = useMutation({
@@ -208,6 +215,13 @@ export default function Admin() {
 
   const handleDeleteCourse = (courseId: string) => {
     deleteCourse.mutate(courseId);
+  };
+
+  // Get paginated courses using the hook
+  const paginatedCourses = coursePagination.getPageData(courses as any[] || []);
+
+  const handleCoursePageChange = (page: number) => {
+    coursePagination.handlePageChange(page);
   };
 
   if (statsLoading && activeTab === "analytics") {
@@ -1008,8 +1022,16 @@ export default function Admin() {
                     </div>
                   </div>
                 ) : courses && (courses as any[]).length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {(courses as any[]).map((course, index) => (
+                  <>
+                    {/* Results summary */}
+                    <div className="mb-6 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                      <p className="text-gray-600 dark:text-gray-400" data-testid="admin-courses-summary">
+                        Showing {((coursePagination.currentPage - 1) * coursePagination.itemsPerPage) + 1}-{Math.min(coursePagination.currentPage * coursePagination.itemsPerPage, (courses as any[]).length)} of {(courses as any[]).length} courses
+                      </p>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                      {paginatedCourses.map((course: any, index: number) => (
                       <div key={course._id} className={`rounded-3xl border border-white/20 shadow-2xl overflow-hidden transition-all duration-300 hover:shadow-3xl hover:-translate-y-2 ${
                         index % 3 === 0 
                           ? 'bg-gradient-to-br from-blue-500/10 to-cyan-500/10' 
@@ -1138,8 +1160,25 @@ export default function Admin() {
                           </div>
                         </div>
                       </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+
+                    {/* Pagination Controls */}
+                    {(courses as any[]).length > coursePagination.itemsPerPage && (
+                      <div className="mt-8">
+                        <Pagination
+                          currentPage={coursePagination.currentPage}
+                          totalPages={coursePagination.totalPages}
+                          totalItems={(courses as any[]).length}
+                          itemsPerPage={coursePagination.itemsPerPage}
+                          onPageChange={handleCoursePageChange}
+                          onItemsPerPageChange={coursePagination.handleItemsPerPageChange}
+                          itemsPerPageOptions={[5, 10, 20, 50]}
+                          className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm"
+                        />
+                      </div>
+                    )}
+                  </>
                 ) : (
                   <div className="rounded-3xl border border-white/20 shadow-2xl overflow-hidden bg-gradient-to-r from-gray-50/50 to-slate-50/50 dark:from-gray-800/50 dark:to-slate-800/50">
                     <div className="text-center py-16 px-8">
