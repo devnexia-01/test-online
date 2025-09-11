@@ -1,4 +1,5 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
+import { queryErrorHandler } from './error-handler';
 
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
